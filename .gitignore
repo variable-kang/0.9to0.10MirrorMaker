@@ -1,0 +1,54 @@
+
+# IDE settings #
+################
+.idea
+.gradle
+build
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+.classpath
+.settings
+.project
+out
+atlassian-ide-plugin.xml
+
+# Maven #
+########
+*/dependency-reduced-pom.xml
+
+# Packages #
+###########
+*.jar
+*.tgz
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# play #
+#########
+logs
+project/project
+project/target
+target
+tmp
+.history
+dist
+.idea
+*.iml
+out
+.idea_modules
+.classpath
+.project
+RUNNING_PID
+.settings
