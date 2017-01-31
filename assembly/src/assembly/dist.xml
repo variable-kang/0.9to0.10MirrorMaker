@@ -9,6 +9,10 @@
         <fileSet>
             <outputDirectory>bin</outputDirectory>
             <directory>${project.parent.basedir}/bin</directory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
         </fileSet>
         <fileSet>
             <outputDirectory>/</outputDirectory>
@@ -20,6 +24,10 @@
         <fileSet>
             <outputDirectory>conf</outputDirectory>
             <directory>${project.parent.basedir}/conf</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>logs</outputDirectory>
+            <directory>${project.parent.basedir}/logs</directory>
         </fileSet>
     </fileSets>
     <dependencySets>
