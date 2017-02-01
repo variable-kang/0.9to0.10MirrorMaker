@@ -12,5 +12,6 @@ Start
 --------------
 It is used in the same way as existing mirror maker.
 
-``` Ex. DIR_PATH/bin/mirrormaker-start.sh -daemon -loggc -name mirror-example --producer.config DIR_PATH/conf/producer.properties --consumer.config DIR_PATH/conf/consumer.properties --whitelist test-topic
+``` 
+Ex. DIR_PATH/bin/mirrormaker-start.sh -daemon -loggc -name mirror-example --producer.config DIR_PATH/conf/producer.properties --consumer.config DIR_PATH/conf/consumer.properties --whitelist test-topic
 ```
