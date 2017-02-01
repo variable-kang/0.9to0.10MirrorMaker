@@ -29,15 +29,17 @@ if [  $JMX_PORT ]; then
 fi
 
 # Log4j settings
-if [ -z "$LOG4J_OPTS" ]; then
+if [ -z "$KAFKA_LOG4J_OPTS" ]; then
   # Log to console. This is a tool.
-  LOG4J_OPTS="-Dlog4j.configuration=file:$BASE_DIR/conf/tools-log4j.properties"
+  KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:$BASE_DIR/conf/tools-log4j.properties"
 else
   # create logs directory
   if [ ! -d "$LOG_DIR" ]; then
     mkdir -p "$LOG_DIR"
   fi
 fi
+
+KAFKA_LOG4J_OPTS="-Dkafka.logs.dir=$LOG_DIR $KAFKA_LOG4J_OPTS"
 
 # Memory options
 if [ -z "$KAFKA_HEAP_OPTS" ]; then
@@ -61,6 +63,12 @@ while [ $# -gt 0 ]; do
       CONSOLE_OUTPUT_FILE=$LOG_DIR/$DAEMON_NAME.out
       shift 2
       ;;
+    -loggc)
+      if [ -z "$KAFKA_GC_LOG_OPTS" ]; then
+        GC_LOG_ENABLED="true"
+      fi
+      shift
+      ;;
     -daemon)
       DAEMON_MODE="true"
       shift
@@ -71,12 +79,19 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+# GC options
+GC_FILE_SUFFIX='-gc.log'
+GC_LOG_FILE_NAME=''
+if [ "x$GC_LOG_ENABLED" = "xtrue" ]; then
+  GC_LOG_FILE_NAME=$DAEMON_NAME$GC_FILE_SUFFIX
+  KAFKA_GC_LOG_OPTS="-Xloggc:$LOG_DIR/$GC_LOG_FILE_NAME -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps "
+fi
 
 # Launch mode
 if [ "x$DAEMON_MODE" = "xtrue" ]; then
-  nohup $JAVA -cp $CLASSPATH $JAVA_OPTS $LOG4J_OPTS $KAFKA_JVM_PERFORMANCE_OPTS $KAFKA_HEAP_OPTS $KAFKA_JMX_OPTS kafka.skplanet.mirrormaker.MirrorMaker "$@" > "$CONSOLE_OUTPUT_FILE" 2>&1 < /dev/null &
+  nohup $JAVA -cp $CLASSPATH $KAFKA_GC_LOG_OPTS $KAFKA_LOG4J_OPTS $KAFKA_JVM_PERFORMANCE_OPTS $KAFKA_HEAP_OPTS $KAFKA_JMX_OPTS kafka.skplanet.mirrormaker.MirrorMaker "$@" > "$CONSOLE_OUTPUT_FILE" 2>&1 < /dev/null &
 else
-  $JAVA -cp $CLASSPATH $JAVA_OPTS $LOG4J_OPTS $KAFKA_JVM_PERFORMANCE_OPTS $KAFKA_HEAP_OPTS $KAFKA_JMX_OPTS kafka.skplanet.mirrormaker.MirrorMaker "$@"
+  exec $JAVA -cp $CLASSPATH $KAFKA_GC_LOG_OPTS $KAFKA_LOG4J_OPTS $KAFKA_JVM_PERFORMANCE_OPTS $KAFKA_HEAP_OPTS $KAFKA_JMX_OPTS kafka.skplanet.mirrormaker.MirrorMaker "$@"
 fi
 
 
